@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import useContract from '../../services/api/useContractApi';
+import usContract from '../../services/api/useContractApi';
 
 export default async function handler(req, res) {
-  const  contract  = useContract("a9cba477f6702e7b175af9914501919d3a3e5a751f08ac3f9b752e56e78d0988");
+  const  contract  = usContract("a9cba477f6702e7b175af9914501919d3a3e5a751f08ac3f9b752e56e78d0988");
 
   let output = null;
   async function fetchContractData() {

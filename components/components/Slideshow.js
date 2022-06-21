@@ -41,7 +41,7 @@ const Slideshow = (images = []) => {
 					height: "100%",
 					alignItems: "center"
 				}}>
-				<a href={each.url} target="_blank" style={{ wordBreak: "break-all" }}>
+				<a href={each.url} target="_blank" rel="noreferrer"  style={{ wordBreak: "break-all" }}>
 					<span>
 						{each.url}
 					</span>
