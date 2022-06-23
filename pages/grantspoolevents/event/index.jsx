@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import SlideShow from '..//..//..//components/components/Slideshow';
-
+import ChooseProjectModal from '../../../components/components/modals/ChooseProjectModal';
 import useContract from '../../../services/useContract';
 import { Header } from '../../../components/layout/Header'
 import isServer from '../../../components/isServer';
@@ -32,6 +32,7 @@ export default function AuctionNFT(user) {
     const [selectbid, setselectbid] = useState('');
 
     const [eventuri, setEventuri] = useState('');
+    const [ShowChooseProjectModal, setShowChooseProjectModal] = useState(false);
 
     const formatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
@@ -137,6 +138,9 @@ export default function AuctionNFT(user) {
     }
 
 
+    function submitProject() {
+        setShowChooseProjectModal(true);
+    }
     return (
         <>
             <Head>
@@ -160,9 +164,9 @@ export default function AuctionNFT(user) {
                 <div className="p-campaign-sidebar" >
                     <aside className="o-campaign-sidebar" >
                         <div className="o-campaign-sidebar-wrapper" >
-                        <span name="dateleft" date={SelectedendDate} className="tittle-title" >
-                                      Days Left
-                                    </span>
+                            <span name="dateleft" date={SelectedendDate} className="tittle-title" >
+                                Days Left
+                            </span>
                             <div className="o-campaign-sidebar-progress-meter m-progress-meter">
                                 <h2 className="m-progress-meter-heading" >
                                     <span className="text-stat text-stat-title" >
@@ -175,6 +179,7 @@ export default function AuctionNFT(user) {
                                     className="p-campaign-share-button-exp mb2x m-auto hrt-gradient-button hrt-gradient-button--gradient-orange hrt-gradient-button--full hrt-gradient-button--shadow hrt-base-button"
                                     data-element-id="btn_donate"
                                     data-analytic-event-listener="true"
+                                    onClick={submitProject}
                                 >
                                     <span className="hrt-gradient-button-text">Submit Project</span>
                                 </a>
@@ -268,7 +273,14 @@ export default function AuctionNFT(user) {
                     </div>
                 ))}
             </div>
-
+            <ChooseProjectModal
+                 show={ShowChooseProjectModal}
+                 onHide={() => {
+                     setShowChooseProjectModal(false);
+                 }}
+                 contract={contract}
+                 eventId={eventId}
+            />
         </>
     );
 }
