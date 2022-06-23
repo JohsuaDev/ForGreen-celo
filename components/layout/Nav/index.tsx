@@ -63,8 +63,18 @@ export function Nav(): JSX.Element {
                 </NavLink>
             </li>
             <li>
+                <NavLink href="/grantspoolevents" id="gransbtnNav">
+                    Grants Pool Events
+                </NavLink>
+            </li>
+            <li>
                 <NavLink href="/CreateEvents">
                     Create Events
+                </NavLink>
+            </li>
+            <li>
+                <NavLink href="/CreateGrantEvents">
+                    Create Grants Pool Events
                 </NavLink>
             </li>
         </>)

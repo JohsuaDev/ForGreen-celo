@@ -7,16 +7,20 @@ contract CeloERC721 is ERC721 {
 	uint256 private _tokenIds;
 	uint256 private _bidIds;
 	uint256 private _eventIds;
+    uint256 public _GrantEventIds;
 	uint256 private _EventTokenIds;
 	uint256 private _TokenBidIds;
 	string[2] data1;
 	uint256 public _EventTokenSearchIds;
 	mapping(uint256 => string[2]) private AllEventTokens;
+    mapping(uint256 => string[2]) private AllGrantJudgers;
 	mapping(uint256 => string[2]) private AllTokensBids;
 	mapping(uint256 => string[2]) public _SearchedStore;
 	mapping(uint256 => string) private _bidURIs;
 	mapping(uint256 => string) private _tokenURIs;
 	mapping(uint256 => string) private _eventURIs;
+	mapping(uint256 => string) public _GrantEventURIs;
+    mapping(uint256 => string) public  _JudgerURIs;
 	mapping(uint256 => string) private _eventRaised;
 	mapping(string => string) private _eventTokens;
 
@@ -58,6 +62,16 @@ contract CeloERC721 is ERC721 {
 		_eventIds++;
 
 		return _eventIds;
+	}
+
+function createGrantEvent(string memory _eventURI)
+		public
+		returns (uint256)
+	{
+		_setGrantEventURI(_GrantEventIds, _eventURI);
+		_GrantEventIds++;
+
+		return _GrantEventIds;
 	}
 
 	function gettokenIdByUri(string memory _tokenURI)
@@ -153,6 +167,14 @@ contract CeloERC721 is ERC721 {
 		_eventURIs[eventId] = _eventURI;
 		_eventRaised[eventId] = "0";
 	}
+
+	function _setGrantEventURI(uint256 eventId, string memory _eventURI)
+		public
+		virtual
+	{
+		_GrantEventURIs[eventId] = _eventURI;
+	}
+
 
 	function _setTokenURI(uint256 tokenId, string memory _tokenURI)
 		public

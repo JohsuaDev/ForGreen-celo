@@ -8,7 +8,7 @@ import { Header } from '../../components/layout/Header'
 import isServer from '../..//components/isServer';
 
 
-export default function Donation() {
+export default function GrantsPoolEvents() {
 
     const [CreatemodalShow, setModalShow] = useState(false);
     const { contract, signerAddress } = useContract('ERC721');
@@ -58,10 +58,10 @@ export default function Donation() {
                 setTokenName(await contract.name());
                 setTokenSymbol(await contract.symbol());
 
-                const totalEvent = await contract.totalEvent();
+                const totalEvent = await contract._GrantEventIds();
                 const arr = [];
                 for (let i = 0; i < Number(totalEvent); i++) {
-                    const value = await contract.eventURI(i);
+                    const value = await contract._GrantEventURIs(i);
                     if (value) {
                         const object = JSON.parse(value);
                         var c = new Date(object.properties.Date.description).getTime();
@@ -73,14 +73,14 @@ export default function Donation() {
                         }
 
                         var pricedes1 = 0;
-                        try { pricedes1 = Number(object.properties.Goal.description * 1.10) } catch (ex) { }
+                        try { pricedes1 = Number(object.properties.Price.description * 1.10) } catch (ex) { }
 
                         arr.push({
                             eventId: i,
                             Title: object.properties.Title.description,
                             Date: object.properties.Date.description,
                             Goalusd: formatter.format(pricedes1),
-                            Goal: object.properties.Goal.description,
+                            Price: object.properties.Price.description,
                             logo: object.properties.logo.description.url,
                         });
                     }
@@ -158,7 +158,7 @@ export default function Donation() {
                                 <h6 className='donation event-details-title'>{listItem.Title}</h6>
                                 <div style={{ display: "flex", "whiteSpace": "pre-wrap" }}>
                                     <h6 className='donation event-goal-price' >Goal:  </h6>
-                                    <h6 className='donation event-goal-price' >{listItem.Goal} CEUR</h6>
+                                    <h6 className='donation event-goal-price' >{listItem.Price} CEUR</h6>
                                 </div>
 
                             </div>
@@ -171,28 +171,13 @@ export default function Donation() {
                                             </div>
                                         </div>
                                     </NavLink >
-                                </>) : (window.localStorage.getItem('Type') == "Donator" ? (<>
-                                    <div className='donation event-BTN card' eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} onClick={activateCreateNFTModal} >
-                                        <div eventid={listItem.eventId} date={listItem.Date} eventtitle={listItem.Title} className="donation event-btn-text card-body" style={{ height: "100%" }}>
-                                            Donate NFT
-                                        </div>
-                                    </div>
-                                    <NavLink href={`/donation/auction?[${listItem.eventId}]`}>
+                                </>) : (        <NavLink href={`/grantspoolevents/event?[${listItem.eventId}]`}>
                                         <div className='donation event-BTN card'>
                                             <div className="donation event-btn-text card-body" style={{ height: "100%" }}>
-                                                Go to auction
+                                                Go to Event
                                             </div>
                                         </div>
-                                    </NavLink >
-                                </>) : (<>
-                                    <NavLink href={`/donation/auction?[${listItem.eventId}]`}>
-                                        <div className='donation event-BTN card'>
-                                            <div className="donation event-btn-text card-body" style={{ height: "100%" }}>
-                                                Go to auction
-                                            </div>
-                                        </div>
-                                    </NavLink >
-                                </>))}
+                                    </NavLink >)}
 
                             </div>
                         </div>
