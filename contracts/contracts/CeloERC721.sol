@@ -99,6 +99,25 @@ function createGrantEvent(string memory _eventURI)
 		return _GrantEventIds;
 	}
 
+function getCheckSubmittedProjectGrant(uint256 Grantid, uint256 ProjectId)
+		public
+		view
+		virtual
+		returns (bool)
+	{		
+		
+		for (uint256 i = 0; i < _GrantProjectIds; i++) {
+			if (
+				AllGrantProject[i][0] == Grantid && 
+				AllGrantProject[i][1] == ProjectId 				
+			) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 
 function getSearchedProjectByGrantID(uint256 Grantid)
 		public
@@ -452,7 +471,6 @@ function _setEventRaised(uint256 _eventId, string memory _raised)
 	{
 		_eventRaised[_eventId] = _raised;
 	}
-
 
  
 function createBid(
