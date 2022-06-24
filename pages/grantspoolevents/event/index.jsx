@@ -118,7 +118,7 @@ export default function AuctionNFT(user) {
                 for (let index = 0; index < object.properties.Judgersdata.length; index++) {
                     const element = object.properties.Judgersdata[index];
                     setJudgersdata((pre) => [...pre, element.wallet]);
-                    if (element.wallet == window.ethereum.selectedAddress) {
+                    if (element.wallet.toLowerCase() == window.ethereum.selectedAddress.toLowerCase()) {
                         setisJudger(true);
                     }
                 }
@@ -195,7 +195,7 @@ export default function AuctionNFT(user) {
                             <div className="o-campaign-sidebar-progress-meter m-progress-meter">
                                 <h2 className="m-progress-meter-heading" >
                                     <span className="text-stat text-stat-title" >
-                                        Participant: {0}
+                                        Prize: {goal} cEUR
                                     </span>
                                 </h2>
                             </div>
@@ -265,8 +265,8 @@ export default function AuctionNFT(user) {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '11px' }}>
-                                    <h6 className='Auction priceText bidprice'>Goal: {listItem.Goal} CEUR</h6>
-                                    <h6 className="Auction Grey-text smallgrey">Earned: {listItem.Earned} CEUR</h6>
+                                    <h6 className='Auction priceText bidprice'>Voted: 0</h6>
+                                    <h6 className="Auction Grey-text smallgrey">Goal: {listItem.Goal} cEUR</h6>
                                 </div>
                                 <div className='Grant-ElementBottomContainer'>
 
