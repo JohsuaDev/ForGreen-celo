@@ -11,7 +11,7 @@ export default function AuctionNFT(user) {
 
     const { contract, signerAddress } = useContract('ERC721');
     const router = useRouter();
-    const [eventId, setEventId] = useState(-1);
+    const [grantId, setgrantId] = useState(-1);
     const [list, setList] = useState([]);
     const [imageList, setimageList] = useState([]);
     const [title, setTitle] = useState('');
@@ -83,7 +83,7 @@ export default function AuctionNFT(user) {
     async function fetchContractData() {
         try {
             if (contract && id) {
-                setEventId(id);
+                setgrantId(id);
                 const value = await contract._GrantEventURIs(id);
 
                 if (document.getElementById("Loading"))
@@ -279,7 +279,7 @@ export default function AuctionNFT(user) {
                      setShowChooseProjectModal(false);
                  }}
                  contract={contract}
-                 eventId={eventId}
+                 grantId={grantId}
             />
         </>
     );

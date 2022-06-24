@@ -8,17 +8,17 @@ contract CeloERC721 is ERC721 {
 	uint256 private _bidIds;
 	uint256 private _eventIds;
     uint256 public _GrantEventIds;
+	uint256 public _GrantProjectIds;
 	uint256 private _EventTokenIds;
 	uint256 private _TokenBidIds;
-	string[2] data1;
 	uint256 public _EventTokenSearchIds;
 	mapping(uint256 => string[2]) private AllEventTokens;
-    mapping(uint256 => string[2]) private AllGrantJudgers;
+    mapping(uint256 => uint256[2]) private AllGrantProject;
 	mapping(uint256 => string[2]) private AllTokensBids;
 	mapping(uint256 => string[2]) public _SearchedStore;
 	mapping(uint256 => string) private _bidURIs;
 	mapping(uint256 => string) private _tokenURIs;
-	mapping(uint256 => string) private _eventURIs;
+	mapping(uint256 => string[2]) private _eventURIs;
 	mapping(uint256 => string) public _GrantEventURIs;
     mapping(uint256 => string) public  _JudgerURIs;
 	mapping(uint256 => string) private _eventRaised;
@@ -28,7 +28,7 @@ contract CeloERC721 is ERC721 {
 		ERC721(name, symbol)
 	{}
 
-	function claimToken(
+function claimToken(
 		address _claimer,
 		string memory _tokenURI,
 		uint256 _eventid
@@ -42,7 +42,7 @@ contract CeloERC721 is ERC721 {
 	}
 
 
-	function _setTokenEvent(
+function _setTokenEvent(
 		uint256 EventTokenId,
 		uint256 EventId,
 		string memory _tokenURI
@@ -52,17 +52,40 @@ contract CeloERC721 is ERC721 {
 			string(_tokenURI)
 		];
 	}
-
-	function createEvent(string memory _eventURI)
+function createEvent(string memory _eventWallet,string memory _eventURI)
 		public
 		returns (uint256)
 	{
-		_setEventURI(_eventIds, _eventURI);
+		_setEventURI(_eventIds,_eventWallet, _eventURI);
 		_setEventRaised(_eventIds, "0");
 		_eventIds++;
 
 		return _eventIds;
 	}
+	
+
+function setGrantProject(	
+		uint256 GrantProjectId,
+		uint256 ProjectId,
+		uint256 GranttId
+	) public virtual {
+		AllGrantProject[GrantProjectId] = [GranttId,ProjectId];
+
+	}
+
+
+function CreateGrantProject(
+		uint256 ProjectId,
+		uint256 GranttId
+	) public returns (uint256) {
+		setGrantProject(_GrantProjectIds,ProjectId,GranttId);
+		_GrantProjectIds++;
+		
+		return _GrantProjectIds;
+	}
+
+
+
 
 function createGrantEvent(string memory _eventURI)
 		public
@@ -74,7 +97,43 @@ function createGrantEvent(string memory _eventURI)
 		return _GrantEventIds;
 	}
 
-	function gettokenIdByUri(string memory _tokenURI)
+
+function getSearchedProjectByGrantID(uint256 Grantid)
+		public
+		view
+		virtual
+		returns (uint256[] memory)
+	{
+		
+		uint256 _TemporarySearch = 0;
+		uint256 _SearchIds = 0;
+		
+		
+		for (uint256 i = 0; i < _GrantProjectIds; i++) {
+			if (
+				AllGrantProject[i][0] == Grantid
+			) {
+				_TemporarySearch++;
+			}
+		}
+		uint256[] memory _SearchedProject = new uint256[](_TemporarySearch);
+
+		for (uint256 i = 0; i < _GrantProjectIds; i++) {
+			if (
+				AllGrantProject[i][0] == Grantid
+			) {
+				_SearchedProject[_SearchIds] = AllGrantProject[i][1];
+				_SearchIds++;
+			}
+		}
+
+
+		return _SearchedProject;
+	}
+
+
+
+function gettokenIdByUri(string memory _tokenURI)
 		public
 		view
 		virtual
@@ -91,7 +150,7 @@ function createGrantEvent(string memory _eventURI)
 		return 0;
 	}
 
-	function getBidIdByUri(string memory _bidURI)
+function getBidIdByUri(string memory _bidURI)
 		public
 		view
 		virtual
@@ -106,7 +165,7 @@ function createGrantEvent(string memory _eventURI)
 		return 0;
 	}
 
-	function gettokenSearchEventTotal(uint256 EventID)
+function gettokenSearchEventTotal(uint256 EventID)
 		public
 		view
 		virtual
@@ -131,7 +190,40 @@ function createGrantEvent(string memory _eventURI)
 		return _SearchedStoreToken;
 	}
 
-	function getGetEventsTokenID(uint256 EventId, string memory _tokenURI)
+function getSearchEventbyWallet(string memory Wallet)
+		public
+		view
+		virtual
+		returns (string[] memory)
+	{
+	
+		uint256 _TemporarySearch = 0;
+		uint256 _SearchIds = 0;
+
+		for (uint256 i = 0; i < _eventIds; i++) {
+			if (
+				keccak256(bytes(_eventURIs[i][0])) ==
+				keccak256(bytes(Wallet))
+			) {
+				_TemporarySearch++;
+			}
+		}
+		string[] memory _SearchedStoreEvents = new string[](_TemporarySearch);
+		for (uint256 i = 0; i < _eventIds; i++) {
+			if (
+				keccak256(bytes(_eventURIs[i][0])) ==
+				keccak256(bytes(Wallet))
+			) {
+				_SearchedStoreEvents[_SearchIds] = _eventURIs[i][1];
+				_SearchIds++;
+			}
+		}
+
+
+		return _SearchedStoreEvents;
+	}
+
+function getGetEventsTokenID(uint256 EventId, string memory _tokenURI)
 		public
 		view
 		virtual
@@ -151,7 +243,7 @@ function createGrantEvent(string memory _eventURI)
 		return 0;
 	}
 
-	function _getSearchedTokenURI(uint256 _tokenId)
+function _getSearchedTokenURI(uint256 _tokenId)
 		public
 		view
 		virtual
@@ -160,15 +252,18 @@ function createGrantEvent(string memory _eventURI)
 		return _SearchedStore[_tokenId][0];
 	}
 
-	function _setEventURI(uint256 eventId, string memory _eventURI)
+function _setEventURI(uint256 eventId,  string memory _eventWallet ,string memory _eventURI)
 		public
 		virtual
 	{
-		_eventURIs[eventId] = _eventURI;
+		_eventURIs[eventId] = [
+			_eventWallet,
+			_eventURI
+		];
 		_eventRaised[eventId] = "0";
 	}
 
-	function _setGrantEventURI(uint256 eventId, string memory _eventURI)
+function _setGrantEventURI(uint256 eventId, string memory _eventURI)
 		public
 		virtual
 	{
@@ -176,7 +271,7 @@ function createGrantEvent(string memory _eventURI)
 	}
 
 
-	function _setTokenURI(uint256 tokenId, string memory _tokenURI)
+function _setTokenURI(uint256 tokenId, string memory _tokenURI)
 		public
 		virtual
 	{
@@ -187,11 +282,11 @@ function createGrantEvent(string memory _eventURI)
 		_tokenURIs[tokenId] = _tokenURI;
 	}
 
-	function eventURI(uint256 eventId) public view returns (string memory) {
+function eventURI(uint256 eventId) public view returns (string[2] memory) {
 		return _eventURIs[eventId];
 	}
 
-	function tokenURI(uint256 tokenId)
+function tokenURI(uint256 tokenId)
 		public
 		view
 		virtual
@@ -206,23 +301,27 @@ function createGrantEvent(string memory _eventURI)
 		return _tokenURIs[tokenId];
 	}
 
-	function totalSupply() public view returns (uint256) {
+function totalSupply() public view returns (uint256) {
 		return _tokenIds;
 	}
 
-	function totalEvent() public view returns (uint256) {
+function totalEvent() public view returns (uint256) {
 		return _eventIds;
 	}
 
-	function _setBidURI(uint256 bidId, string memory _bidURI) public virtual {
+function totalGrantEvent() public view returns (uint256) {
+		return _GrantProjectIds;
+	}
+
+function _setBidURI(uint256 bidId, string memory _bidURI) public virtual {
 		_bidURIs[bidId] = _bidURI;
 	}
 
-	function BidURI(uint256 BidId) public view returns (string memory) {
+function BidURI(uint256 BidId) public view returns (string memory) {
 		return _bidURIs[BidId];
 	}
 
-	function getTotalBid(uint256 TokenID)
+function getTotalBid(uint256 TokenID)
 		public
 		view
 		virtual
@@ -245,7 +344,7 @@ function createGrantEvent(string memory _eventURI)
 		return _SearchedStoreBid;
 	}
 
-	function getBidsSearchToken(uint256 TokenID)
+function getBidsSearchToken(uint256 TokenID)
 		public
 		view
 		virtual
@@ -268,7 +367,7 @@ function createGrantEvent(string memory _eventURI)
 		return _SearchedStoreBid;
 	}
 
-	function _setTokenBid(
+function _setTokenBid(
 		uint256 TokenBidId,
 		uint256 TokenId,
 		string memory _BidURI
@@ -279,7 +378,7 @@ function createGrantEvent(string memory _eventURI)
 		];
 	}
  
- 	function getEventRaised(uint256 _eventId)
+function getEventRaised(uint256 _eventId)
 		public
 		view
 		virtual
@@ -288,14 +387,14 @@ function createGrantEvent(string memory _eventURI)
 		return _eventRaised[_eventId];
 	}
 
-	function _setEventRaised(uint256 _eventId, string memory _raised)
+function _setEventRaised(uint256 _eventId, string memory _raised)
 		public
 	{
 		_eventRaised[_eventId] = _raised;
 	}
 
  
-	function createBid(
+function createBid(
 		uint256 _tokenId,
 		string memory _bidURI,
 		string memory _updatedURI,

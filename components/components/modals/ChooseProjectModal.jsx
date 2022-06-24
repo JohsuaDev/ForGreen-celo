@@ -7,7 +7,7 @@ export default function ChooseProjectModal({
 	show,
 	onHide,
 	contract,
-	eventId,
+	grantId,
 
 }) {
 
@@ -22,14 +22,13 @@ export default function ChooseProjectModal({
 		try {
 			if (contract) {
 
-				const totalEvent = await contract.totalEvent();
+				const AllEvents = await contract.getSearchEventbyWallet(window.ethereum.selectedAddress);
 				const arr = [];
-				for (let i = 0; i < Number(totalEvent); i++) {
-					const value = await contract.eventURI(i);
+				for (let i = 0; i < AllEvents.length; i++) {
+					const value = AllEvents[i];
 					if (value) {
 						const object = JSON.parse(value);
-						if (object.properties.wallet.description == window.ethereum.selectedAddress) {
-							var c = new Date(object.properties.Date.description).getTime();
+						var c = new Date(object.properties.Date.description).getTime();
 							var n = new Date().getTime();
 							var d = c - n;
 							var s = Math.floor((d % (1000 * 60)) / 1000);
@@ -43,7 +42,6 @@ export default function ChooseProjectModal({
 								Goal: object.properties.Goal.description,
 								logo: object.properties.logo.description.url,
 							});
-						}
 					}
 				}
 				setList(arr);
@@ -57,6 +55,20 @@ export default function ChooseProjectModal({
 
 	}, [contract]);
 
+	async function choosenProject(id) {
+		
+        try {
+            const result = await contract.CreateGrantProject(
+				id,
+				grantId
+            );
+
+        } catch {
+            window.location.href = ('/login');
+        }
+
+		window.location.reload();
+	}
 
 
 	return (
@@ -77,7 +89,7 @@ export default function ChooseProjectModal({
 				<div className='Project-ALL-project-Container'>
 					{list.map((item, i) => {
 						return <>
-							<div style={{ height: 110, width: 110 }}>
+							<div onClick={()=>{choosenProject(i)}} style={{ height: 110, width: 110 }}>
 								<div className="Project-Image-Container">
 									<img
 										className="Event-Uploaded-File-clip-icon"

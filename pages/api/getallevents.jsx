@@ -11,7 +11,10 @@ export default async function handler(req, res) {
       let totalEvent =Number( await contract.totalEvent());
       const arr = [];
       for (let i = 0; i < Number(totalEvent); i++) {
-          const value = await contract.eventURI(i);
+          
+        const valueAll = await contract.eventURI(i);
+        const value = valueAll[1];
+
           if (value) {
               const object = JSON.parse(value);
               var c = new Date(object.properties.Date.description).getTime();

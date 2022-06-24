@@ -121,7 +121,7 @@ export default function GrantsPoolEvents() {
         <>
             <Header></Header>
             <Head>
-                <title>Donation</title>
+                <title>Grants Pool Events</title>
                 <meta name="description" content="Donation" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>

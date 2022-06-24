@@ -13,8 +13,8 @@ export default function Add5DaysFORM() {
 
         const totalEvent = await contract.totalEvent();
         for (let i = 0; i < Number(totalEvent); i++) {
-            const value = await contract.eventURI(i);
-            
+            const valueAll = await contract.eventURI(i);
+            const value = valueAll[1];
             if (value) {
                 const object = JSON.parse(value);
                 console.log(object.properties.Date.description)
@@ -22,7 +22,7 @@ export default function Add5DaysFORM() {
                 c.setDate(c.getDate() + 5);
                 object.properties.Date.description = c.toISOString()
                 console.log(object.properties.Date.description)
-                await contract._setEventURI(i, JSON.stringify(object))
+                await contract._setEventURI(i,valueAll[0], JSON.stringify(object))
             }
         }
     }

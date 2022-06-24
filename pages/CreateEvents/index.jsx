@@ -114,6 +114,7 @@ export default function CreateEvents() {
 
         try {
             const result = await contract.createEvent(
+                window.ethereum.selectedAddress,
                 JSON.stringify(createdObject)
             );
 

@@ -121,10 +121,9 @@ export default function CreateGrantPoolEvents() {
                 JSON.stringify(createdObject)
             );
 
-            // console.log(result);
-            let eventid = await contract.totalEvent();
+            let eventid = await contract.totalGrantEvent();
             if (document.getElementById("plugin").checked) {
-                await CreatePlugin(`http://${window.location.host}/donation/auction?[${eventid}]`);
+                await CreatePlugin(`http://${window.location.host}/grantspoolevents/event?[${eventid}]`);
             }
 
         } catch {

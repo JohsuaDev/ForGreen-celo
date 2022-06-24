@@ -60,8 +60,12 @@ export default function Donation() {
 
                 const totalEvent = await contract.totalEvent();
                 const arr = [];
+
                 for (let i = 0; i < Number(totalEvent); i++) {
-                    const value = await contract.eventURI(i);
+                    const valueAll = await contract.eventURI(i);
+                    const value = valueAll[1];
+                    
+                    console.log(value);
                     if (value) {
                         const object = JSON.parse(value);
                         var c = new Date(object.properties.Date.description).getTime();
