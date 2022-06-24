@@ -279,10 +279,10 @@ export default function AuctionNFT(user) {
 
                             <img src={listItem.logo} className="auction AuctionBidImage" />
                             <div style={{ width: '100%', display: 'flex', height: '100%', padding: '5px 0px', position: 'relative', flexDirection: 'column', justifyContent: 'space-around' }}>
-                                <div className="DetialsContainer" style={{ rowGap: "5px" }} >
+                                <div className="Grant-DetialsContainer" style={{ rowGap: "5px" }} >
                                     <h6 className='Auction NFT-title'>{listItem.Title}</h6>
                                     <div className="TextContainer">
-                                        <h6 className="Auction NFT-Description" style={{ color: "#8B8B8B" }}>{listItem.Description}</h6>
+                                        <h6 className="Grant NFT-Description" style={{ color: "#8B8B8B" }}>{listItem.Description}</h6>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '11px' }}>

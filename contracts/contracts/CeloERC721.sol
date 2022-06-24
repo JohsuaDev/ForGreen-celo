@@ -473,8 +473,7 @@ function _setEventRaised(uint256 _eventId, string memory _raised)
 		_eventRaised[_eventId] = _raised;
 	}
 
- 
-function createBid(
+ function createBid(
 		uint256 _tokenId,
 		string memory _bidURI,
 		string memory _updatedURI,
