@@ -26,7 +26,7 @@ export default function AuctionNFT(user) {
     const [EventEarned, setEventEarned] = useState('');
     const [EventDescription, setEventDescription] = useState('');
     const [EventWallet, setEventWallet] = useState('');
-    const [dateleft, setdateleft] = useState(''); 
+    const [dateleft, setdateleft] = useState('');
     const [SelectedendDate, setSelectedendDate] = useState('');
     const [date, setdate] = useState('');
     const [dateleftBid, setdateleftBid] = useState('');
@@ -41,8 +41,8 @@ export default function AuctionNFT(user) {
     const [modalShow, setModalShow] = useState(false);
     const [ViewmodalShow, setViewModalShow] = useState(false);
     const [DonatemodalShow, setDonateModalShow] = useState(false);
-       const [DirectModalShow, setDirectModalShow] = useState(false);
-    
+    const [DirectModalShow, setDirectModalShow] = useState(false);
+
     const formatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -94,7 +94,7 @@ export default function AuctionNFT(user) {
             if (contract && id) {
                 setEventId(id);
                 const valueAll = await contract.eventURI(id);
-                const value =valueAll[1];
+                const value = valueAll[1];
 
                 const arr = [];
                 const totalTokens = await contract.gettokenSearchEventTotal(id);
@@ -109,7 +109,7 @@ export default function AuctionNFT(user) {
                         var pricedes1 = 0;
                         try { pricedes1 = formatter.format(Number(object.properties.price.description * 1.10)) } catch (ex) { }
                         const TokenId = Number(await contract.gettokenIdByUri(obj));
-                        
+
                         console.log(TokenId);
                         arr.push({
                             Id: TokenId,
@@ -132,7 +132,7 @@ export default function AuctionNFT(user) {
                 setEventuri(value);
 
                 const object = JSON.parse(value);
-                setimageList( object.properties.allFiles);
+                setimageList(object.properties.allFiles);
                 setTitle(object.properties.Title.description);
                 setselectedAddress(object.properties.wallet.description);
                 setgoalusd(formatter.format(Number(object.properties.Goal.description * 1.10)));
@@ -207,11 +207,11 @@ export default function AuctionNFT(user) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header></Header>
-      
+
 
             <div className="p-campaign" data-view-id="pg_donate_index" >
                 <div className="p-campaign-collage color-background-blue" >
-                <SlideShow images={imageList} />
+                    <SlideShow images={imageList} />
 
                 </div>
                 <header className="p-campaign-header" >
@@ -226,7 +226,7 @@ export default function AuctionNFT(user) {
                                 <progress
                                     className="a-progress-bar a-progress-bar--green"
                                     max={100}
-                                    value={(EventEarned * 100)/goal}
+                                    value={(EventEarned * 100) / goal}
                                 />
                                 <h2 className="m-progress-meter-heading" >
                                     {EventEarned}
@@ -235,26 +235,29 @@ export default function AuctionNFT(user) {
                                     </span>
                                 </h2>
                             </div>
-                            <div className="p-campaign-share-donate-buttons">
+                            {(window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null || window.localStorage.getItem('Type') == "manager") ? (<>
+
+                            </>) : (<> <div className="p-campaign-share-donate-buttons">
                                 <a
                                     className="p-campaign-share-button-exp mb2x m-auto hrt-gradient-button hrt-gradient-button--gradient-orange hrt-gradient-button--full hrt-gradient-button--shadow hrt-base-button"
                                     data-element-id="btn_donate"
-                                      data-analytic-event-listener="true"
-                                      onClick={activateDonateNFTModal}
+                                    data-analytic-event-listener="true"
+                                    onClick={activateDonateNFTModal}
                                 >
                                     <span className="hrt-gradient-button-text">Donate NFT</span>
                                 </a>
                             </div>
-                            <div className="p-campaign-share-donate-buttons">
-                                <a
-                                    className="p-campaign-share-button-exp mb2x m-auto hrt-gradient-button hrt-gradient-button--gradient-orange hrt-gradient-button--full hrt-gradient-button--shadow hrt-base-button"
-                                    data-element-id="btn_donate"
-                                      data-analytic-event-listener="true"
-                                      onClick={activateDirectDonateModal}
-                                >
-                                    <span className="hrt-gradient-button-text">Donate Coin</span>
-                                </a>
-                            </div>
+                                <div className="p-campaign-share-donate-buttons">
+                                    <a
+                                        className="p-campaign-share-button-exp mb2x m-auto hrt-gradient-button hrt-gradient-button--gradient-orange hrt-gradient-button--full hrt-gradient-button--shadow hrt-base-button"
+                                        data-element-id="btn_donate"
+                                        data-analytic-event-listener="true"
+                                        onClick={activateDirectDonateModal}
+                                    >
+                                        <span className="hrt-gradient-button-text">Donate Coin</span>
+                                    </a>
+                                </div></>)}
+
                         </div>
                     </aside>
                 </div>
@@ -287,7 +290,7 @@ export default function AuctionNFT(user) {
                         }}
                     >
                         <div className="o-campaign-story mt3x" >
-                           {EventDescription}
+                            {EventDescription}
                         </div>
                     </div>
                 </div>
@@ -372,7 +375,7 @@ export default function AuctionNFT(user) {
                 id={selectid}
                 title={selecttitle}
             />
-            
+
             <DonateNFTModal
                 show={DonatemodalShow}
                 onHide={() => {
@@ -385,7 +388,7 @@ export default function AuctionNFT(user) {
                 SelectedTitle={title}
                 enddate={SelectedendDate}
             />
-                <DirectDonateModal
+            <DirectDonateModal
                 show={DirectModalShow}
                 onHide={() => {
                     setDirectModalShow(false);
@@ -393,7 +396,7 @@ export default function AuctionNFT(user) {
                 eventId={eventId}
                 contract={contract}
                 senderAddress={signerAddress}
-                EventWallet = {EventWallet}
+                EventWallet={EventWallet}
             />
         </>
     );
