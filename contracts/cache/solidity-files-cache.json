@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "H:\\Codes\\ForGreen-celo\\contracts\\contracts\\CeloERC721.sol": {
-      "lastModificationDate": 1656094240065,
-      "contentHash": "cf3f376be86d9e1022b6e6ddaa3a7bf5",
+      "lastModificationDate": 1656097466636,
+      "contentHash": "a18cbc3cfc879d64c3b9d9615be05f0b",
       "sourceName": "contracts/CeloERC721.sol",
       "solcConfig": {
         "version": "0.8.6",

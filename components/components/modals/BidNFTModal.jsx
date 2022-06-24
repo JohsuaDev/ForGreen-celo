@@ -24,7 +24,7 @@ export default function BidNFTModal({
 	const sleep = (milliseconds) => {
 		return new Promise(resolve => setTimeout(resolve, milliseconds))
 	}
-	
+
 
 	const [Amount, AmountInput] = UseFormInput({
 		type: 'text',
@@ -47,22 +47,23 @@ export default function BidNFTModal({
 
 		var BidNFTBTN = document.getElementById("bidNFTBTN")
 		BidNFTBTN.disabled = true;
-		if (parseInt(Amount) < parseInt(Highestbid)) {
+		console.log("bidding")
+		if (Number(Amount) < Number(Highestbid)) {
 			activateWarningModal(`Amount cannot be under ${Highestbid} CEUR`);
 			return;
-		}else{
+		} else {
 			var alertELM = document.getElementById("alert");
-			alertELM.style.display = 'none';			
+			alertELM.style.display = 'none';
 		}
-		try	{
+		try {
 			activateWorkingModal("Bidding....")
 
 			const Web3 = require("web3")
-            const web3 = new Web3(window.ethereum)
+			const web3 = new Web3(window.ethereum)
 			let AmountinFull = (Number(Amount) * 1000000000000000000).toLocaleString('fullwide', { useGrouping: false });
-			 activateWorkingModal("A moment please")
+			activateWorkingModal("A moment please")
 			const result = await web3.eth.sendTransaction({ from: senderAddress, to: toAddress, value: AmountinFull })
-			 console.log(result);
+			console.log(result);
 			activateWorkingModal("Done! Adding into CEUR Network...")
 
 			const tokenUri = await contract.tokenURI(tokenId);
@@ -70,7 +71,7 @@ export default function BidNFTModal({
 			if (Number(parsed['properties']['price']['description']) < Number(Amount)) {
 				parsed['properties']['price']['description'] = Amount;
 				parsed['properties']['higherbidadd']['description'] = senderAddress;
-	
+
 			}
 			let currentDate = new Date();
 			const createdObject = {
@@ -92,10 +93,11 @@ export default function BidNFTModal({
 				}
 			};
 			activateWorkingModal("Please confirm creating Bid...")
-
-			const result2 = await contract.createBid(tokenId, JSON.stringify(createdObject), JSON.stringify(parsed), eventId);
+			const Raised = Number( await contract.getEventRaised(eventId)) + Number(Amount);
+			
+			const result2 = await contract.createBid(tokenId, JSON.stringify(createdObject), JSON.stringify(parsed), eventId,Raised);
 			activateWorkingModal("A moment please")
-			const expectedBlockTime = 1000; 
+			const expectedBlockTime = 1000;
 			let transactionReceipt = null
 			while (transactionReceipt == null) { // Waiting expectedBlockTime until the transaction is mined
 				transactionReceipt = await web3.eth.getTransactionReceipt(result2.hash);
@@ -108,13 +110,13 @@ export default function BidNFTModal({
 			BidNFTBTN.disabled = false;
 			await sleep(200)
 			window.location.reload();
-		}catch(e){
+		} catch (e) {
 			activateWarningModal(`Error! Please try again!`);
 			var alertELM = document.getElementById("workingalert");
-			alertELM.style.display = 'none';	
+			alertELM.style.display = 'none';
 			return;
 		}
-	
+
 	}
 
 	return (
@@ -125,14 +127,9 @@ export default function BidNFTModal({
 			centered
 		>
 			<Modal.Header closeButton>
-				{(type == "Cryptopunk") ? (
-					<Modal.Title id="contained-modal-title-vcenter">
-						Bid Cryptopunk
-					</Modal.Title>) : (
-					<Modal.Title id="contained-modal-title-vcenter">
-						Bid NFT
-					</Modal.Title>
-				)}
+				<Modal.Title id="contained-modal-title-vcenter">
+					Bid NFT
+				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body className="show-grid">
 				<Form>
