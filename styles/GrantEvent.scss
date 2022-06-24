@@ -1,0 +1,27 @@
+.ProjectbuttonText {
+    color: white;
+    background: rgb(0, 222, 205);
+    text-align: center;
+    cursor: pointer;
+    font-size: 2.2vw;
+    height: 100%;
+    padding: 0;
+    padding-top: 3vw;
+    border-radius: 12px;
+    padding-bottom: 3vw;
+    float: right;
+    margin: 0px;
+    width: 20vw;
+}
+
+.Grant-ElementBottomContainer{
+    display: flex;
+    position: absolute;
+    right: 12px;
+}
+
+.Grant-Projectcontainer{
+    display: flex;
+    gap: 6px;
+    flex-direction: column;    
+}

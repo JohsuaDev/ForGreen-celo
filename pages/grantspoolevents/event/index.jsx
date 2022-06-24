@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import NavLink from 'next/link';
 import SlideShow from '..//..//..//components/components/Slideshow';
 import ChooseProjectModal from '../../../components/components/modals/ChooseProjectModal';
 import useContract from '../../../services/useContract';
@@ -13,24 +14,16 @@ export default function AuctionNFT(user) {
     const router = useRouter();
     const [grantId, setgrantId] = useState(-1);
     const [list, setList] = useState([]);
+    const [Judgersdata, setJudgersdata] = useState([]);
+    const [isJudger, setisJudger] = useState(false);
     const [imageList, setimageList] = useState([]);
     const [title, setTitle] = useState('');
     const [goalusd, setgoalusd] = useState('');
     const [goal, setgoal] = useState('');
-    const [EventEarned, setEventEarned] = useState('');
     const [EventDescription, setEventDescription] = useState('');
     const [EventWallet, setEventWallet] = useState('');
-    const [dateleft, setdateleft] = useState('');
-    const [SelectedendDate, setSelectedendDate] = useState('');
     const [date, setdate] = useState('');
-    const [dateleftBid, setdateleftBid] = useState('');
     const [logo, setlogo] = useState('');
-    const [selectid, setselectid] = useState('');
-    const [selecttitle, setselecttitle] = useState('');
-    const [selectedAddress, setselectedAddress] = useState('');
-    const [selecttype, setselecttype] = useState('');
-    const [selectbid, setselectbid] = useState('');
-
     const [eventuri, setEventuri] = useState('');
     const [ShowChooseProjectModal, setShowChooseProjectModal] = useState(false);
 
@@ -86,6 +79,34 @@ export default function AuctionNFT(user) {
                 setgrantId(id);
                 const value = await contract._GrantEventURIs(id);
 
+                const AllProjects = await contract.getSearchedProjectByGrantID(Number(id));
+                const arr = [];
+                for (let i = 0; i < AllProjects.length; i++) {
+                    const value2 = await contract.eventURI(Number(AllProjects[i]));
+                    let totalEarned = await contract.getEventRaised(Number(AllProjects[i]));
+
+                    if (value2) {
+                        const object = JSON.parse(value2[1]);
+                        var c = new Date(object.properties.Date.description).getTime();
+                        var n = new Date().getTime();
+                        var d = c - n;
+                        var s = Math.floor((d % (1000 * 60)) / 1000);
+                        if (s.toString().includes("-")) {
+                            continue;
+                        }
+                        arr.push({
+                            eventId: Number(AllProjects[i]),
+                            Title: object.properties.Title.description,
+                            Description: object.properties.Description.description,
+                            Goal: object.properties.Goal.description,
+                            Earned: Number(totalEarned),
+                            logo: object.properties.logo.description.url,
+                        });
+                    }
+                }
+                setList(arr);
+
+
                 if (document.getElementById("Loading"))
                     document.getElementById("Loading").style = "display:none";
 
@@ -94,17 +115,21 @@ export default function AuctionNFT(user) {
 
                 const object = JSON.parse(value);
                 console.log(object);
+                for (let index = 0; index < object.properties.Judgersdata.length; index++) {
+                    const element = object.properties.Judgersdata[index];
+                    setJudgersdata((pre) => [...pre, element.wallet]);
+                    if (element.wallet == window.ethereum.selectedAddress) {
+                        setisJudger(true);
+                    }
+                }
+
                 setimageList(object.properties.allFiles);
                 setTitle(object.properties.Title.description);
-                setselectedAddress(object.properties.wallet.description);
                 setgoalusd(formatter.format(Number(object.properties.Price.description * 1.10)));
                 setgoal(Number(object.properties.Price.description));
                 setEventDescription(object.properties.Description.description)
                 setEventWallet(object.properties.wallet.description)
-                setdateleft(LeftDate(object.properties.Date.description));
-                setSelectedendDate(object.properties.Date.description);
                 setdate(object.properties.Date.description);
-                setdateleftBid(LeftDateBid(object.properties.Date.description));
                 setlogo(object.properties.logo.description);
 
             }
@@ -164,7 +189,7 @@ export default function AuctionNFT(user) {
                 <div className="p-campaign-sidebar" >
                     <aside className="o-campaign-sidebar" >
                         <div className="o-campaign-sidebar-wrapper" >
-                            <span name="dateleft" date={SelectedendDate} className="tittle-title" >
+                            <span name="dateleft" date={date} className="tittle-title" >
                                 Days Left
                             </span>
                             <div className="o-campaign-sidebar-progress-meter m-progress-meter">
@@ -223,48 +248,48 @@ export default function AuctionNFT(user) {
             </div>
 
 
-            {/* <div id='Loading' className="LoadingArea">
+            <div id='Loading' className="LoadingArea">
                 <h1>Loading...</h1>
-            </div> */}
+            </div>
             <div className='auction NFTs-container' >
                 {list.map((listItem) => (
-                    <div key={listItem.Id} className="row auction ElementsContainer bgWhite">
+                    <div key={listItem.eventId} className="row auction ElementsContainer bgWhite">
                         <div className='auction NFt-contain' >
 
-                            <img src={listItem.image} className="auction AuctionBidImage" />
+                            <img src={listItem.logo} className="auction AuctionBidImage" />
                             <div style={{ width: '100%', display: 'flex', height: '100%', padding: '5px 0px', position: 'relative', flexDirection: 'column', justifyContent: 'space-around' }}>
                                 <div className="DetialsContainer" style={{ rowGap: "5px" }} >
-                                    <h6 className='Auction NFT-title'>{listItem.name}</h6>
+                                    <h6 className='Auction NFT-title'>{listItem.Title}</h6>
                                     <div className="TextContainer">
-                                        <h6 className="Auction NFT-Description" style={{ color: "#8B8B8B" }}>{listItem.description}</h6>
+                                        <h6 className="Auction NFT-Description" style={{ color: "#8B8B8B" }}>{listItem.Description}</h6>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '11px' }}>
-                                    <h6 className="Auction Grey-text smallgrey">Current bid</h6>
-                                    <h6 className='Auction priceText bidprice'>{listItem.price} CEUR</h6>
-                                    <h6 name="date" date={date} className="Auction Grey-text smallgrey">{dateleftBid}</h6>
+                                    <h6 className='Auction priceText bidprice'>Goal: {listItem.Goal} CEUR</h6>
+                                    <h6 className="Auction Grey-text smallgrey">Earned: {listItem.Earned} CEUR</h6>
                                 </div>
-                                <div className='Auction ElementBottomContainer'>
+                                <div className='Grant-ElementBottomContainer'>
 
                                     <div className='BidAllcontainer' >
-                                        <div className='Bidsbutton'>
-                                            <div tokenid={listItem.Id} title={listItem.name} onClick={activateViewBidModal} className="Bidcontainer col">
-                                                <div tokenid={listItem.Id} title={listItem.name} className="card BidcontainerCard">
-                                                    <div tokenid={listItem.Id} title={listItem.name} className="card-body bidbuttonText">View</div>
-                                                </div>
-                                            </div>
+                                        <div className='Grant-Projectcontainer' >
 
-                                            {(window.localStorage.getItem('Type') == "" || window.localStorage.getItem('Type') == null || window.localStorage.getItem('Type') == "manager") ? (<>
-
-                                            </>) : (<>
-
-                                                <div tokenid={listItem.Id} highestbid={listItem.price} onClick={activateBidNFTModal} className="Bidcontainer col">
-                                                    <div tokenid={listItem.Id} highestbid={listItem.price} className="card BidcontainerCard">
-                                                        <div tokenid={listItem.Id} highestbid={listItem.price} className="card-body bidbuttonText">Bid</div>
+                                            {(window.localStorage.getItem('Type') != "" && window.localStorage.getItem('Type') != null && isJudger == true) ? (<>
+                                                <div className="col">
+                                                    <div className=" ProjectcontainerCard">
+                                                        <div className="card-body ProjectbuttonText">Vote</div>
                                                     </div>
                                                 </div>
+                                            </>) : (<>
+
                                             </>)}
 
+                                            <NavLink href={`/donation/auction?[${listItem.eventId}]`}>
+                                                <div className=" col">
+                                                    <div className="ProjectcontainerCard">
+                                                        <div className="card-body ProjectbuttonText">Go to project</div>
+                                                    </div>
+                                                </div>
+                                            </NavLink >
                                         </div>
                                     </div>
                                 </div>
@@ -274,12 +299,12 @@ export default function AuctionNFT(user) {
                 ))}
             </div>
             <ChooseProjectModal
-                 show={ShowChooseProjectModal}
-                 onHide={() => {
-                     setShowChooseProjectModal(false);
-                 }}
-                 contract={contract}
-                 grantId={grantId}
+                show={ShowChooseProjectModal}
+                onHide={() => {
+                    setShowChooseProjectModal(false);
+                }}
+                contract={contract}
+                grantId={grantId}
             />
         </>
     );

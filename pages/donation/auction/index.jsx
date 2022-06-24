@@ -93,7 +93,9 @@ export default function AuctionNFT(user) {
         try {
             if (contract && id) {
                 setEventId(id);
-                const value = await contract.eventURI(id);
+                const valueAll = await contract.eventURI(id);
+                const value =valueAll[1];
+
                 const arr = [];
                 const totalTokens = await contract.gettokenSearchEventTotal(id);
                 let totalEarned = await contract.getEventRaised(id);
