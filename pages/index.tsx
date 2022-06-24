@@ -24,21 +24,22 @@ export default function Welcome() {
 	}
 	return (<>
 		<Head>
-			<title>DemeterGift</title>
-			<meta name="description" content="DemeterGift" />
+			<title>ForGreen</title>
+			<meta name="description" content="ForGreen" />
 			<link rel="icon" href="/favicon.ico" />
 		</Head>
 		<Header></Header>
 		<div className="welcome mb-5">
 			<div className="welcome row" style={{ flexDirection: 'column', alignItems: 'center' }}>
-				<img src="https://i.postimg.cc/Lsxrbz02/Logo-2.png" className='welcome img' />
+				<img src="/favicon.png" className='welcome img' />
 				<div className="text-center">
 					<h1 className='welcome title'>A gift with a story</h1>
 				</div>
 				<div className="text-center">
 					<h4 className='welcome description' >
-						DemeterGift creates the most easy, transparent and fun NFT charity auction
-						on Web3
+					Donation events as a service, to create the most easy, transparent and fun NFT charity auction, by using the power of Celo  stabelcoins with DAO, to help organizations raise additional support for a green world!
+
+
 					</h4>
 				</div>
 				<div className="Welcome DonateBTN col">

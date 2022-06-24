@@ -97,7 +97,7 @@ export default function Login() {
         <><>
             <Head>
                 <title>Login</title>
-                <meta name="description" content="DemeterGift - Login" />
+                <meta name="description" content="ForGreen - Login" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header></Header>
