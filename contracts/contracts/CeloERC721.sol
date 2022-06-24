@@ -9,10 +9,12 @@ contract CeloERC721 is ERC721 {
 	uint256 private _eventIds;
     uint256 public _GrantEventIds;
 	uint256 public _GrantProjectIds;
+	uint256 public _GrantVoteIds;
 	uint256 private _EventTokenIds;
 	uint256 private _TokenBidIds;
 	uint256 public _EventTokenSearchIds;
 	mapping(uint256 => string[2]) private AllEventTokens;
+	mapping(uint256 => string[3]) private AllGrantVotes;
     mapping(uint256 => uint256[2]) private AllGrantProject;
 	mapping(uint256 => string[2]) private AllTokensBids;
 	mapping(uint256 => string[2]) public _SearchedStore;
@@ -124,6 +126,64 @@ function getSearchedProjectByGrantID(uint256 Grantid)
 			) {
 				_SearchedProject[_SearchIds] = AllGrantProject[i][1];
 				_SearchIds++;
+			}
+		}
+
+
+		return _SearchedProject;
+	}
+
+function setGrantVote(	
+		uint256 GrantVoteId,
+		string memory Wallet,
+		string memory  ProjectId,
+		string memory  GranttId
+	) public virtual {
+		AllGrantVotes[GrantVoteId] = [GranttId,ProjectId,Wallet];
+
+	}
+
+
+function createGrantVote(string memory Wallet,uint256 ProjectId,uint256 GranttId)
+		public
+		returns (uint256)
+	{
+		setGrantVote(_GrantVoteIds, Wallet,Strings.toString(ProjectId),Strings.toString(GranttId));
+		_GrantVoteIds++;
+
+		return _GrantVoteIds;
+	}
+function getSearchedGrantVoteProject(uint256 Grantid,uint256 ProjectId)
+		public
+		view
+		virtual
+		returns (string[] memory)
+	{
+		
+		uint256 _TemporarySearch = 0;
+		uint256 _SearchIds = 0;
+		
+		
+		for (uint256 i = 0; i < _GrantVoteIds; i++) {
+			if (
+				keccak256(bytes(AllGrantVotes[i][0])) == keccak256(bytes(Strings.toString(Grantid))) &&
+				keccak256(bytes(AllGrantVotes[i][1])) == keccak256(bytes(Strings.toString(ProjectId)))
+				
+			) {
+				_TemporarySearch++;
+			}
+		}
+		string[] memory _SearchedProject = new string[](_TemporarySearch);
+
+	
+		for (uint256 i = 0; i < _GrantVoteIds; i++) {
+			if (
+				keccak256(bytes(AllGrantVotes[i][0])) == keccak256(bytes(Strings.toString(Grantid))) &&
+				keccak256(bytes(AllGrantVotes[i][1])) == keccak256(bytes(Strings.toString(ProjectId)))
+				
+			) {
+			_SearchedProject[_SearchIds] = AllGrantVotes[i][2];
+			_SearchIds++;
 			}
 		}
 
@@ -392,6 +452,7 @@ function _setEventRaised(uint256 _eventId, string memory _raised)
 	{
 		_eventRaised[_eventId] = _raised;
 	}
+
 
  
 function createBid(

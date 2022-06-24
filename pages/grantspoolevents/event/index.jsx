@@ -76,7 +76,7 @@ export default function AuctionNFT(user) {
     async function fetchContractData() {
         try {
             if (contract && id) {
-                setgrantId(id);
+                setgrantId(Number(id));
                 const value = await contract._GrantEventURIs(id);
 
                 const AllProjects = await contract.getSearchedProjectByGrantID(Number(id));
@@ -84,7 +84,7 @@ export default function AuctionNFT(user) {
                 for (let i = 0; i < AllProjects.length; i++) {
                     const value2 = await contract.eventURI(Number(AllProjects[i]));
                     let totalEarned = await contract.getEventRaised(Number(AllProjects[i]));
-
+                    const votes = await contract.getSearchedGrantVoteProject(Number(id),Number(AllProjects[i]));
                     if (value2) {
                         const object = JSON.parse(value2[1]);
                         var c = new Date(object.properties.Date.description).getTime();
@@ -94,6 +94,13 @@ export default function AuctionNFT(user) {
                         if (s.toString().includes("-")) {
                             continue;
                         }
+                        let isvoted = false;
+                        for (let index = 0; index < votes.length; index++) {
+                            const element = votes[index];
+                            if (element.toLowerCase() == window.ethereum.selectedAddress.toLowerCase() ){
+                                isvoted= true;
+                            }                            
+                        }
                         arr.push({
                             eventId: Number(AllProjects[i]),
                             Title: object.properties.Title.description,
@@ -101,9 +108,12 @@ export default function AuctionNFT(user) {
                             Goal: object.properties.Goal.description,
                             Earned: Number(totalEarned),
                             logo: object.properties.logo.description.url,
+                            votecount: votes.length,
+                            isVoted: isvoted
                         });
                     }
                 }
+                arr.sort(function(a, b){return a.votecount - b.votecount});
                 setList(arr);
 
 
@@ -138,6 +148,17 @@ export default function AuctionNFT(user) {
         }
     }
 
+
+    async function VoteProject(projectid) {
+        try {
+            const result = await contract.createGrantVote(window.ethereum.selectedAddress, projectid, Number(id));
+
+            window.location.reload();
+        } catch (e) {
+            return;
+        }
+
+    }
 
     setInterval(function () {
         calculateTimeLeft();
@@ -265,7 +286,7 @@ export default function AuctionNFT(user) {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '11px' }}>
-                                    <h6 className='Auction priceText bidprice'>Voted: 0</h6>
+                                    <h6 className='Auction priceText bidprice'>Voted: {listItem.votecount}</h6>
                                     <h6 className="Auction Grey-text smallgrey">Goal: {listItem.Goal} cEUR</h6>
                                 </div>
                                 <div className='Grant-ElementBottomContainer'>
@@ -273,8 +294,8 @@ export default function AuctionNFT(user) {
                                     <div className='BidAllcontainer' >
                                         <div className='Grant-Projectcontainer' >
 
-                                            {(window.localStorage.getItem('Type') != "" && window.localStorage.getItem('Type') != null && isJudger == true) ? (<>
-                                                <div className="col">
+                                            {(window.localStorage.getItem('Type') != "" && window.localStorage.getItem('Type') != null && isJudger == true && listItem.isVoted != true) ? (<>
+                                                <div onClick={() => { VoteProject(listItem.eventId) }} className="col">
                                                     <div className=" ProjectcontainerCard">
                                                         <div className="card-body ProjectbuttonText">Vote</div>
                                                     </div>
