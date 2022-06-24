@@ -13,10 +13,9 @@ import { NFTStorage, File } from 'nft.storage'
 export default function CreateGrantPoolEvents() {
     const { contract, signerAddress } = useContract('ERC721');
     const [EventImage, setEventImage] = useState([]);
-    if (isServer()) return null;
     const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJDMDBFOGEzZEEwNzA5ZkI5MUQ1MDVmNDVGNUUwY0Q4YUYyRTMwN0MiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY1NDQ3MTgxOTY2NSwibmFtZSI6IlplbmNvbiJ9.6znEiSkiLKZX-a9q-CKvr4x7HS675EDdaXP622VmYs8'
     const client = new NFTStorage({ token: NFT_STORAGE_TOKEN })
-
+    
     const [EventTitle, EventTitleInput] = UseFormInput({
         defaultValue: "",
         type: 'text',
@@ -44,8 +43,8 @@ export default function CreateGrantPoolEvents() {
 
     const [Judgersdata, setJudgersdata] = useState([
     ])
-
-
+    
+    
     function downloadURI(uri, name) {
         var link = document.createElement("a");
         link.download = name;
@@ -53,7 +52,7 @@ export default function CreateGrantPoolEvents() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
+        
     }
     async function CreatePlugin(src) {
         const output = `<html><head></head><body><iframe src="${src}" style="width: 100%;height: 100%;" /></body></html>`;
@@ -77,7 +76,7 @@ export default function CreateGrantPoolEvents() {
             allFiles.push(urlImageEvent)
             console.log(urlImageEvent)
         }
-
+        
         const createdObject = {
             title: 'Asset Metadata',
             type: 'object',
@@ -115,24 +114,24 @@ export default function CreateGrantPoolEvents() {
             }
         };
 
-
+        
         try {
             const result = await contract.createGrantEvent(
                 JSON.stringify(createdObject)
-            );
-
-            let eventid = await contract.totalGrantEvent();
-            if (document.getElementById("plugin").checked) {
-                await CreatePlugin(`http://${window.location.host}/grantspoolevents/event?[${eventid}]`);
+                );
+                
+                let eventid = await contract.totalGrantEvent();
+                if (document.getElementById("plugin").checked) {
+                    await CreatePlugin(`http://${window.location.host}/grantspoolevents/event?[${eventid}]`);
+                }
+                
+            } catch {
+                window.location.href = ('/login');
             }
-
-        } catch {
-            window.location.href = ('/login');
-        }
         window.location.href = ('/grantspoolevents');
     }
-
-
+    
+    
     function CreateEventBTN() {
         if (window.localStorage.getItem("Type") != "manager" && typeof window.ethereum !== 'undefined') {
             return (<>
@@ -182,17 +181,17 @@ export default function CreateGrantPoolEvents() {
             }
         }
         setEventImage(newImages);
-
+        
     }
-
-
+    
+    
     function addJudger(id, value) {
         console.log("adding")
         setJudgersdata(prevState => [{
             wallet: value
         }, ...prevState]);
     }
-
+    
     function deleteJudger(id) {
         console.log("deleting")
         let newArr = [];
@@ -202,12 +201,12 @@ export default function CreateGrantPoolEvents() {
             }
         }
         setJudgersdata(newArr);
-
+        
     }
-
-
-
-
+    
+    
+    
+    
     function TemplateJudger({ walelt, id }) {
         let changedvalue = "";
         return <>
@@ -260,19 +259,20 @@ export default function CreateGrantPoolEvents() {
                         fontSize: 24,
                         borderRadius: 7
                     }}
-                >
+                    >
                     <img
                         src="https://th.bing.com/th/id/OIP.YH9brx_8F1JxgZAtUbN7XAHaHa?pid=ImgDet&rs=1"
                         style={{ width: "100%", maxWidth: "inherit", height: "100%" }}
-                    />
+                        />
                 </Button>
 
             </div>
         </>
     }
 
-
-
+    
+    if (isServer()) return null;
+    
     return (
         <><>
             <Head>
@@ -307,7 +307,7 @@ export default function CreateGrantPoolEvents() {
                             <h6>Judgers</h6>
                             <div name="judgers-Container" style={{ height: 100, overflow: "auto" }}>
                                 {Judgersdata.map((item, id) => {
-                                    return <WrittenJudger walelt={item.wallet} id={id} />
+                                    return <WrittenJudger key={id} walelt={item.wallet} id={id} />
                                 })}
                                 <TemplateJudger />
                             </div>
@@ -324,10 +324,10 @@ export default function CreateGrantPoolEvents() {
                                 <div className='Event-UploadedFileContainer'>
                                     {EventImage.map((item, i) => {
                                         return (<>
-                                            <div className='Event-Images'>
-                                                <button onClick={DeleteSelectedImages} name='deleteBTN' id={i}>X</button>
+                                            <div key={i} className='Event-Images'>
+                                                <button key={i} onClick={DeleteSelectedImages} name='deleteBTN' id={i}>X</button>
                                                 {(item.type.includes("image")) ? (<img className='Event-Images-imagebox' src={URL.createObjectURL(item)} />) : (<>
-                                                    <div className='Event-Uploaded-File-Container'>
+                                                    <div key={i} className='Event-Uploaded-File-Container'>
                                                         <img className='Event-Uploaded-File-clip-icon' src='https://cdn1.iconfinder.com/data/icons/web-page-and-iternet/90/Web_page_and_internet_icons-10-512.png' />
                                                         <span className='Event-Uploaded-File-name'>{item.name.substring(0, 10)}...</span>
                                                     </div>
