@@ -44,7 +44,7 @@ export default function BidNFTModal({
 	}
 
 	async function bidNFT() {
-
+		
 		var BidNFTBTN = document.getElementById("bidNFTBTN")
 		BidNFTBTN.disabled = true;
 		console.log("bidding")
@@ -93,9 +93,11 @@ export default function BidNFTModal({
 				}
 			};
 			activateWorkingModal("Please confirm creating Bid...")
-			const Raised = Number( await contract.getEventRaised(eventId)) + Number(Amount);
-			
-			const result2 = await contract.createBid(tokenId, JSON.stringify(createdObject), JSON.stringify(parsed), eventId,Raised);
+			const totalraised = await contract.getEventRaised(Number(eventId));
+			let Raised = 0;
+			Raised = Number(totalraised) + Number(Amount);
+			console.log("doen")
+			const result2 = await contract.createBid(tokenId, JSON.stringify(createdObject), JSON.stringify(parsed), eventId,Raised.toString());
 			activateWorkingModal("A moment please")
 			const expectedBlockTime = 1000;
 			let transactionReceipt = null

@@ -479,7 +479,7 @@ function createBid(
 		string memory _bidURI,
 		string memory _updatedURI,
 		uint256 _eventid,
-		uint256 _raised
+		string memory _raised
 	) public   {
 		uint256 _EventTokenId = getGetEventsTokenID(
 			_eventid,
@@ -487,7 +487,7 @@ function createBid(
 		);
 		_tokenURIs[_tokenId] = _updatedURI;
 		_setTokenEvent(_EventTokenId, _eventid, _updatedURI);
-		_setEventRaised(_eventid,Strings.toString(_raised));
+		_setEventRaised(_eventid,_raised);
 
 		_setTokenBid(_TokenBidIds, _tokenId, _bidURI);
 		_TokenBidIds++;
